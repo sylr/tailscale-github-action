@@ -10,6 +10,9 @@ inputs:
   authkey:
     description: 'Your Tailscale authentication key, from the admin panel.'
     required: true
+  tags:
+    description: 'The tags you want to associate to your "device"'
+    required: false
   version:
     description: 'Tailscale version to use.'
     required: true
@@ -38,10 +41,11 @@ runs:
         shell: bash
         env:
           TAILSCALE_AUTHKEY: ${{ inputs.authkey }}
+          TAILSCALE_TAGS: ${{ inputs.tags }}
         run: |
           sudo tailscaled 2>~/tailscaled.log &
           HOSTNAME="github-$(cat /etc/hostname)"
-          until sudo tailscale up --authkey ${TAILSCALE_AUTHKEY} --hostname=${HOSTNAME} --accept-routes
+          until sudo tailscale up --authkey ${TAILSCALE_AUTHKEY} --hostname=${HOSTNAME} --advertise-tags="${TAILSCALE_TAGS}" --accept-routes
           do
             sleep 0.5
           done
