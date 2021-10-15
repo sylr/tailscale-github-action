@@ -43,7 +43,8 @@ runs:
           TAILSCALE_AUTHKEY: ${{ inputs.authkey }}
           TAILSCALE_TAGS: ${{ inputs.tags }}
         run: |
-          sudo tailscaled 2>~/tailscaled.log &
+          sudo tailscaled --socks5-server=localhost:1055 2>~/tailscaled.log &
+          sleep 1 && cat ~/tailscaled.log
           HOSTNAME="github-$(cat /etc/hostname)"
           until sudo tailscale up --authkey ${TAILSCALE_AUTHKEY} --hostname=${HOSTNAME} --advertise-tags="${TAILSCALE_TAGS}" --accept-routes
           do
