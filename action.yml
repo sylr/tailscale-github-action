@@ -133,3 +133,4 @@ runs:
             TAGS_ARG="--advertise-tags=${{ inputs.tags }}"
           fi
           timeout --verbose --kill-after=1s ${TIMEOUT} sudo -E tailscale up ${TAGS_ARG} --authkey=${TAILSCALE_AUTHKEY} --hostname=${HOSTNAME} --accept-routes ${ADDITIONAL_ARGS}
+          timeout --verbose --kill-after=1s ${TIMEOUT} sudo -E bash -c 'while tailscale dns query google.com. a | grep "failed to query DNS"; do sleep 1; done'
